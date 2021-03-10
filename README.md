@@ -2,9 +2,7 @@
 A minimal node.js JavaScript app that demonstrates how to create an application
 with automated JWT token management.
 
-This demo queries the BCH balance of a single address every 10 seconds. It uses
-the free-tier of [Fullstack.cash](https://fullstack.cash) to access the Bitcoin
-Cash blockchain. It uses
+This demo queries the BCH balance, UTXOs and biggest UTXOs of a single address. It uses
 the [jwt-bch-lib](https://github.com/Permissionless-Software-Foundation/jwt-bch-lib) npm
 library to automatically retrieve its JWT token when the app starts.
 
@@ -16,3 +14,5 @@ library to automatically retrieve its JWT token when the app starts.
 
 ## License
 [MIT](./LICENSE.md)
+
+

@@ -12,7 +12,7 @@
 const config = require('./config')
 
 // Instantiate bch-js SDK for working with Bitcoin Cash.
-const BCHJS = require('@chris.troutner/bch-js')
+const BCHJS = require('@psf/bch-js')
 let bchjs = new BCHJS()
 
 // Instantiate the JWT handling library for FullStack.cash.
@@ -25,7 +25,8 @@ const jwtLib = new JwtLib({
 })
 
 // The BCH address this app is monitoring.
-const address = 'bitcoincash:qr8wlllpll7cgjtav9qt7zuqtj9ldw49jc8evqxf5x'
+// const address = 'bitcoincash:qr8wlllpll7cgjtav9qt7zuqtj9ldw49jc8evqxf5x'
+const address = 'bitcoincash:qzdfa6lh2e984lafnymqv6vckuhgra79gsd4y9vspp'
 
 // startup() starts the app.
 // This is a one-time function used to initalize the app at startup. It registers
@@ -63,13 +64,13 @@ async function startup () {
 
     // Start a timer that periodically checks the balance of the app.
     // Also start a timer that runs the main app every 10 seconds.
-    setInterval(function () {
-      try {
-        checkBalance()
-      } catch (err) {
-        console.log('Error: ', err)
-      }
-    }, 3000) // 3 seconds
+    // setInterval(function () {
+    //   try {
+    //     checkBalance()
+    //   } catch (err) {
+    //     console.log('Error: ', err)
+    //   }
+    // }, 3000) // 3 seconds
 
     // Also check the balance immediately.
     checkBalance()
@@ -83,19 +84,33 @@ async function startup () {
 async function checkBalance () {
   try {
     // Get the balance for the address from the indexer.
-    const balance = await bchjs.Blockbook.balance(address)
-    // console.log(`balance: ${JSON.stringify(balance, null, 2)}`)
+    const balance = await bchjs.Electrumx.balance(address)
+    console.log(`balance: ${JSON.stringify(balance, null, 2)}`)
 
     // Calculate the real balance.
     const realBalance =
-      Number(balance.balance) + Number(balance.unconfirmedBalance)
+      Number(balance.balance.confirmed) + Number(balance.balance.unconfirmed)
 
     // Generate a timestamp.
     let now = new Date()
     now = now.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })
 
     console.log(`Balance: ${realBalance} satoshis at ${now}`)
-    console.log(' ')
+    // console.log(' ')
+
+    // let utxos = bchjs.Utxo.get(address)
+    let utxos = await bchjs.Utxo.get(address);
+    console.log(utxos);
+    // let utxos = await bchjs.Utxo.get('bchtest:qq2ckhgcz4fvna8jvlqdu692ujtrqsue8yarpm648v');
+    
+    let data = utxos[0].bchUtxos;
+    var utxos_array = [];
+    utxos_array.push(data);
+    console.log(utxos_array[0])
+
+    let utxo = bchjs.Utxo.findBiggestUtxo(utxos[0].bchUtxos)
+    console.log("Biggest UTXO is:",utxo)
+
   } catch (err) {
     console.error('Error in checkBalance(): ', err)
     console.log(' ')

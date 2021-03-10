@@ -62,17 +62,6 @@ async function startup () {
     // Re-instantiate bch-js with the API token.
     bchjs = new BCHJS({ restURL: config.APISERVER, apiToken: apiToken })
 
-    // Start a timer that periodically checks the balance of the app.
-    // Also start a timer that runs the main app every 10 seconds.
-    // setInterval(function () {
-    //   try {
-    //     checkBalance()
-    //   } catch (err) {
-    //     console.log('Error: ', err)
-    //   }
-    // }, 3000) // 3 seconds
-
-    // Also check the balance immediately.
     checkBalance()
   } catch (err) {
     console.error('Error in startup()')
@@ -101,7 +90,6 @@ async function checkBalance () {
     // let utxos = bchjs.Utxo.get(address)
     let utxos = await bchjs.Utxo.get(address);
     console.log(utxos);
-    // let utxos = await bchjs.Utxo.get('bchtest:qq2ckhgcz4fvna8jvlqdu692ujtrqsue8yarpm648v');
     
     let data = utxos[0].bchUtxos;
     var utxos_array = [];
